@@ -645,6 +645,8 @@ try {
 
     // $mail->Send();
     // echo $message;
+    // $database->beginDebug();
+    print_r($database->info());
 
     if (isset($_POST['nama_produk']) && $_POST['nama_produk'] == "Desain Web"){
         $database->insert("tb_order", [
@@ -709,6 +711,7 @@ try {
             "jenis_kelamin" => $_POST['gender']
         ]);
     }
+    // var_dump($database->debugLog());
 
     echo '<div id="success">
             <div class="icon icon--order-success svg">

@@ -25,7 +25,7 @@ if($_SESSION['username'] == NULL){
     <!-- vendor css -->
     <link href="../lib/fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../lib/ionicons/css/ionicons.min.css" rel="stylesheet">
-    <link href="../lib/jqvmap/jqvmap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css" rel="stylesheet">
 
     <!-- DashForge CSS -->
     <link rel="stylesheet" href="../css/template/dashforge.css">
@@ -103,52 +103,54 @@ if($_SESSION['username'] == NULL){
             </div>
           </div>
 
-          <div class="row row-xs">
-          <div data-label="Example" class="df-example demo-table">
-            <div class="table-responsive">
-                <table class="table table-bordered mg-b-0">
-                <thead>
-                    <tr>
-                        <th scope="col">No.</th>
-                        <th scope="col">Jenis</th>
-                        <th scope="col">Keinginan</th>
-                        <th scope="col">Deskripsi</th>
-                        <th scope="col">Domain</th>
-                        <th scope="col">Hosting</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                    $data = $database->select("tb_order", [
-                        "id_order",
-                        "jenis",
-                        "keinginan",
-                        "deskripsi",
-                        "domain",
-                        "hosting"
-                    ]);
-                    $no = 1;
-                    foreach ($data as $d){
-                ?>
-                    <tr>
-                        <th scope="row"><?php echo $no++; ?></th>
-                        <td><?php echo $d['jenis']; ?></td>
-                        <td><?php echo $d['keinginan']; ?></td>
-                        <td><?php echo $d['deskripsi']; ?></td>
-                        <td><?php echo $d['domain']; ?></td>
-                        <td><?php echo $d['hosting']; ?></td>
-                        <td>
-                            <a href="#modalFitur<?php echo $d['id_order'] ?>" data-toggle="modal" class="btn btn-primary">Fitur</a>
-                            
-                            <a href="hapus.php?id=<?php echo $d['id_order']; ?>" class="btn btn-danger">Hapus</a>
-                        </td>
-                    </tr>
-                <?php } ?>
-                </tbody>
-                </table>
-            </div><!-- table-responsive -->
-            </div><!-- df-example -->
+          <div class="row">
+            <div class="col-md-12">
+              <div data-label="order" class="df-example demo-table">
+                <!-- <div class="table-responsive"> -->
+                  <table class="table table-bordered mg-b-0" id="listOrder">
+                    <thead>
+                        <tr>
+                            <th scope="col">No.</th>
+                            <th scope="col">Jenis</th>
+                            <th scope="col">Keinginan</th>
+                            <th scope="col">Deskripsi</th>
+                            <th scope="col">Domain</th>
+                            <th scope="col">Hosting</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                          $data = $database->select("tb_order", [
+                              "id_order",
+                              "jenis",
+                              "keinginan",
+                              "deskripsi",
+                              "domain",
+                              "hosting"
+                          ]);
+                          $no = 1;
+                          foreach ($data as $d){
+                      ?>
+                      <tr>
+                          <th scope="row"><?php echo $no++; ?></th>
+                          <td><?php echo $d['jenis']; ?></td>
+                          <td><?php echo $d['keinginan']; ?></td>
+                          <td><?php echo $d['deskripsi']; ?></td>
+                          <td><?php echo $d['domain']; ?></td>
+                          <td><?php echo $d['hosting']; ?></td>
+                          <td>
+                              <a href="#modalFitur<?php echo $d['id_order'] ?>" data-toggle="modal" class="btn btn-primary">Fitur</a>
+                              
+                              <a href="hapus.php?id=<?php echo $d['id_order']; ?>" class="btn btn-danger">Hapus</a>
+                          </td>
+                      </tr>
+                      <?php } ?>
+                    </tbody>
+                  </table>
+                <!-- </div>table-responsive -->
+              </div><!-- df-example -->
+            </div>
           </div><!-- row -->
         </div><!-- container -->
       </div>
@@ -208,10 +210,16 @@ if($_SESSION['username'] == NULL){
     <script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../lib/feather-icons/feather.min.js"></script>
     <script src="../lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 
     <script src="../js/template/dashforge.js"></script>
     <script src="../js/template/dashforge.aside.js"></script>
     <script src="../js/template/dashforge.sampledata.js"></script>
-    <script src="../js/template/dashboard-one.js"></script>
+
+    <script>
+      $(document).ready( function () {
+          $('#listOrder').DataTable();
+      } );
+    </script>
   </body>
 </html>

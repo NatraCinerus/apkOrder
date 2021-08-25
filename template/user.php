@@ -25,6 +25,7 @@ if($_SESSION['username'] == NULL){
     <link href="../lib/fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../lib/ionicons/css/ionicons.min.css" rel="stylesheet">
     <link href="../lib/jqvmap/jqvmap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css" rel="stylesheet">
 
     <!-- DashForge CSS -->
     <link rel="stylesheet" href="../css/template/dashforge.css">
@@ -103,42 +104,42 @@ if($_SESSION['username'] == NULL){
           </div>
           <a href="#tambah" data-toggle="modal" class="btn btn-success">Tambah</a>
           <br><br>
-          <div class="row row-xs">
-          <div data-label="Example" class="df-example demo-table">
-            <div class="table-responsive">
-                <table class="table table-bordered mg-b-0">
-                <thead>
+          <div class="row">
+            <div class="col-md-8">
+              <div data-label="Example" class="df-example demo-table">
+                <table class="table table-bordered mg-b-0" id="listUser">
+                  <thead>
                     <tr>
-                        <th scope="col">No.</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Action</th>
+                      <th scope="col">No.</th>
+                      <th scope="col">Username</th>
+                      <th scope="col">Action</th>
                     </tr>
-                </thead>
-                <tbody>
-                <?php
-                    $data = $database->select("tb_user", [
-                        "id_user",
-                        "username",
-                        "password"
-                    ]);
-                    $no = 1;
-                    foreach ($data as $d){
-                ?>
-                    <tr>
-                        <th scope="row"><?php echo $no++; ?></th>
-                        <td><?php echo $d['username']; ?></td>
-                        <td>
-                            <a href="#edit<?php echo $d['id_user'] ?>" data-toggle="modal" class="btn btn-primary">Edit</a>
-                            <a href="#editPass<?php echo $d['id_user'] ?>" data-toggle="modal" class="btn btn-warning">Edit Password</a>
-                            
-                            <a href="hapus_user.php?id=<?php echo $d['id_user']; ?>" class="btn btn-danger">Hapus</a>
-                        </td>
-                    </tr>
-                <?php } ?>
-                </tbody>
+                  </thead>
+                  <tbody>
+                    <?php
+                        $data = $database->select("tb_user", [
+                            "id_user",
+                            "username",
+                            "password"
+                        ]);
+                        $no = 1;
+                        foreach ($data as $d){
+                    ?>
+                      <tr>
+                          <th scope="row"><?php echo $no++; ?></th>
+                          <td><?php echo $d['username']; ?></td>
+                          <td>
+                              <a href="#edit<?php echo $d['id_user'] ?>" data-toggle="modal" class="btn btn-primary">Edit</a>
+                              <a href="#editPass<?php echo $d['id_user'] ?>" data-toggle="modal" class="btn btn-warning">Edit Password</a>
+                              
+                              <a href="hapus_user.php?id=<?php echo $d['id_user']; ?>" class="btn btn-danger">Hapus</a>
+                          </td>
+                      </tr>
+                    <?php } ?>
+                  </tbody>
                 </table>
-            </div><!-- table-responsive -->
-            </div><!-- df-example -->
+              </div><!-- df-example -->
+            </div>
           </div><!-- row -->
           </div><!-- row -->
         </div><!-- container -->
@@ -200,10 +201,15 @@ if($_SESSION['username'] == NULL){
                 <form action="edit_pass.php" method="POST">
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" class="form-control" placeholder="password" name="password">
+                        <input type="password" class="form-control" placeholder="password" name="password" id="pass<?php echo $d['id_user'] ?>">
                     </div>
+                    <div class="form-group pass">
+                        <label>Confirm Password</label>
+                        <input type="password" class="form-control" placeholder="confirm password" name="confPass" id="confPass<?php echo $d['id_user'] ?>">
+                    </div>
+                    <div style="color:green;" id="CheckPasswordMatch<?php echo $d['id_user'] ?>"></div>
                     <input type="hidden" value="<?php echo $d['id_user'] ?>" name="id_user">
-                    <button class="btn btn-primary btn-block">Save</button>
+                    <button class="btn btn-primary btn-block" id="savePass<?php echo $d['id_user'] ?>" disabled>Save</button>
                 </form>
             </div>
           </div><!-- modal-body -->
@@ -246,10 +252,41 @@ if($_SESSION['username'] == NULL){
     <script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../lib/feather-icons/feather.min.js"></script>
     <script src="../lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 
     <script src="../js/template/dashforge.js"></script>
     <script src="../js/template/dashforge.aside.js"></script>
     <script src="../js/template/dashforge.sampledata.js"></script>
-    <script src="../js/template/dashboard-one.js"></script>
+    <?php
+        $data = $database->select("tb_user", [
+            "id_user",
+            "username",
+            "password"
+        ]);
+        foreach ($data as $d){
+    ?>
+    <script>
+      $(document).ready( function () {
+          $('#listUser').DataTable();
+      } );
+
+      function checkPasswordMatch<?php echo $d['id_user'] ?>() {
+        var password<?php echo $d['id_user'] ?> = $("#pass<?php echo $d['id_user'] ?>").val();
+        var confirmPassword<?php echo $d['id_user'] ?> = $("#confPass<?php echo $d['id_user'] ?>").val();
+        // console.log(password<?php //echo $d['id_user'] ?>);
+        // console.log(confirmPassword<?php //echo $d['id_user'] ?>);
+        if (password<?php echo $d['id_user'] ?> != confirmPassword<?php echo $d['id_user'] ?>){
+            $("#CheckPasswordMatch<?php echo $d['id_user'] ?>").html("Password Tidak Sama!");
+            $("#savePass<?php echo $d['id_user'] ?>").prop('disabled', true);
+        }else{
+            $("#CheckPasswordMatch<?php echo $d['id_user'] ?>").html("Password Sama.");
+            $("#savePass<?php echo $d['id_user'] ?>").removeAttr("disabled");
+        }
+      }
+      $(document).ready(function () {
+        $("#confPass<?php echo $d['id_user'] ?>").keyup(checkPasswordMatch<?php echo $d['id_user'] ?>);
+      });
+    </script>
+    <?php } ?>
   </body>
 </html>
