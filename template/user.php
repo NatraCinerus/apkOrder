@@ -1,11 +1,9 @@
 <?php 
-session_start();
 require '../koneksi.php';
 
 if($_SESSION['username'] == NULL){ 
   header("location: login.php"); 
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -104,6 +102,13 @@ if($_SESSION['username'] == NULL){
           </div>
           <a href="#tambah" data-toggle="modal" class="btn btn-success">Tambah</a>
           <br><br>
+          <div class="row">
+            <div class="col-md-4">
+            <?php  
+              flash();
+            ?>
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-8">
               <div data-label="Example" class="df-example demo-table">

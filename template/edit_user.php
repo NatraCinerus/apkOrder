@@ -11,6 +11,7 @@ $database->update("tb_user", [
     ]
 
 );
+setFlash('berhasil', 'diedit', 'warning');
 
 header("location: user.php"); 
 ?>
